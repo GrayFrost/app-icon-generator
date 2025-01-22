@@ -12,32 +12,53 @@ const handleFileUpload = async (event) => {
   if (!file) return;
   
   try {
-    processing.value = true;
-    const formData = new FormData();
-    formData.append('icon', file);
-    
-    const response = await fetch('http://localhost:3000/generate-icons', {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (!response.ok) {
-      throw new Error('图片处理失败');
-    }
-    
-    const { icons } = await response.json();
-    
-    generatedImages.value = icons.map(({ size, buffer }) => ({
-      size,
-      blob: new Blob([Uint8Array.from(atob(buffer), c => c.charCodeAt(0))], { type: 'image/png' }),
-      url: `data:image/png;base64,${buffer}`
-    }));
+    generateIcons(file);
   } catch (error) {
     console.error("图片处理失败:", error);
   } finally {
     processing.value = false;
   }
 };
+
+async function generateIcons(imageFile) {
+    try {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        const response = await fetch('http://localhost:8080/api/icons/generate', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('生成图标失败');
+        }
+
+        // 获取文件名
+        const contentDisposition = response.headers.get('content-disposition');
+        const fileName = contentDisposition
+            ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+            : 'icons.zip';
+
+        // 将响应转换为 blob
+        const blob = await response.blob();
+        
+        // 创建下载链接
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        
+        // 清理
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    } catch (error) {
+        console.error('生成图标时出错:', error);
+        throw error;
+    }
+}
 
 const downloadZip = async () => {
   const zip = new JSZip();
