@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.IconGeneratorService;
+import org.example.service.IconGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,9 +17,11 @@ import java.io.ByteArrayOutputStream;
 @RestController
 @RequestMapping("/api/icons")
 public class IconController {
+    private final IconGeneratorService iconGeneratorService;
 
-    @Autowired
-    private IconGeneratorService iconGeneratorService;
+    public IconController(IconGeneratorService iconGeneratorService) {
+        this.iconGeneratorService = iconGeneratorService;
+    }
 
     @PostMapping("/generate")
     public ResponseEntity<byte[]> generateIcons(@RequestParam("image") MultipartFile file) {

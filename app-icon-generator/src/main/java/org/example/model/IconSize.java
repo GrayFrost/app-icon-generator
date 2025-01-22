@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 public enum IconSize {
     ICON_16(16),

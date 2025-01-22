@@ -1,18 +1,22 @@
-package org.example;
+package org.example.service.impl;
 
+import org.example.model.IconSize;
+import org.example.service.IconGeneratorService;
+import org.springframework.stereotype.Service;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.resizers.configurations.Antialiasing;
 import net.coobird.thumbnailator.resizers.configurations.Rendering;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 
-public class IconGeneratorService {
-    
+@Service
+public class IconGeneratorServiceImpl implements IconGeneratorService {
     public Map<Integer, byte[]> generateIcons(byte[] sourceImageData) throws IOException {
         Map<Integer, byte[]> result = new HashMap<>();
         BufferedImage sourceImage = ImageIO.read(new ByteArrayInputStream(sourceImageData));
@@ -48,4 +52,4 @@ public class IconGeneratorService {
                 
         return outputStream.toByteArray();
     }
-} 
+}

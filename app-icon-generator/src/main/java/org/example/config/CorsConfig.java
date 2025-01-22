@@ -1,23 +1,13 @@
-package org.example;
+package org.example.config;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
-    @Bean
-    public IconGeneratorService iconGeneratorService() {
-        return new IconGeneratorService();
-    }
-
+@Configuration
+public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -33,4 +23,4 @@ public class Application {
         source.registerCorsConfiguration("/api/**", config);
         return new CorsFilter(source);
     }
-} 
+}
