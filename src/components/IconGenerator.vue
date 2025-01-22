@@ -5,40 +5,37 @@ import { saveAs } from "file-saver";
 
 const sizes = [16, 32, 64, 128, 256, 512, 1024];
 const generatedImages = ref([]);
+const processing = ref(false);
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
-
+  
   try {
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-
-    await new Promise((resolve) => {
-      img.onload = resolve;
+    processing.value = true;
+    const formData = new FormData();
+    formData.append('icon', file);
+    
+    const response = await fetch('http://localhost:3000/generate-icons', {
+      method: 'POST',
+      body: formData
     });
-
-    const promises = sizes.map(async (size) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, size, size);
-
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => {
-          resolve({
-            size,
-            blob,
-            url: URL.createObjectURL(blob),
-          });
-        }, "image/png");
-      });
-    });
-
-    generatedImages.value = await Promise.all(promises);
+    
+    if (!response.ok) {
+      throw new Error('图片处理失败');
+    }
+    
+    const { icons } = await response.json();
+    
+    generatedImages.value = icons.map(({ size, buffer }) => ({
+      size,
+      blob: new Blob([Uint8Array.from(atob(buffer), c => c.charCodeAt(0))], { type: 'image/png' }),
+      url: `data:image/png;base64,${buffer}`
+    }));
   } catch (error) {
     console.error("图片处理失败:", error);
+  } finally {
+    processing.value = false;
   }
 };
 
@@ -141,6 +138,8 @@ const downloadSingle = ({ size, url }) => {
   position: relative;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.05);
+  width: 500px;
+  margin: 0 auto;
 }
 
 .upload-box:hover {
