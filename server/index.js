@@ -43,18 +43,17 @@ const validateImage = (req, res, next) => {
 app.post('/generate-icons', upload.single('icon'), validateImage, async (req, res) => {
   try {
     const sizes = [16, 32, 64, 128, 256, 512, 1024];
-    const image = sharp(req.file.buffer);
     
     // 验证图片尺寸
-    const metadata = await image.metadata();
+    const metadata = await sharp(req.file.buffer).metadata();
     if (metadata.width !== 1024 || metadata.height !== 1024) {
       return res.status(400).json({ error: '请上传 1024x1024 像素的图片' });
     }
     
     const results = await Promise.all(
       sizes.map(async (size) => {
-        const buffer = await image
-          .clone()
+        // 对每个尺寸创建新的 sharp 实例，而不是使用 clone()
+        const buffer = await sharp(req.file.buffer)
           .resize(size, size, {
             kernel: sharp.kernel.lanczos3,
             fit: 'contain',
@@ -78,8 +77,8 @@ app.post('/generate-icons', upload.single('icon'), validateImage, async (req, re
     console.error('图片处理错误详情:', error);
     res.status(500).json({ 
       error: '图片处理失败',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      message: error.message,
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
     });
   }
 });
