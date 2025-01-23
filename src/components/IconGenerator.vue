@@ -24,8 +24,8 @@ async function generateIcons(imageFile) {
     try {
         const formData = new FormData();
         formData.append('image', imageFile);
-        const baseUrl = import.meta.env.BASE_URL;
-        const response = await fetch(`${baseUrl}/api/icons/generate`, {
+        const apiDomain = import.meta.env.VITE_API_DOMAIN;
+        const response = await fetch(`${apiDomain}/api/icons/generate`, {
             method: 'POST',
             body: formData
         });
