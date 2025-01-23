@@ -20,6 +20,9 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Maven.app-icon-generator [clean].executor": "Run",
+    "Maven.app-icon-generator [install].executor": "Run",
+    "Maven.app-icon-generator [package].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -37,7 +40,7 @@
     "project.structure.last.edited": "项目",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "settings.editor.selected.configurable": "build.tools",
     "vue.rearranger.settings.migration": "true",
     "应用程序.Main.executor": "Run"
   }
@@ -114,7 +117,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1737536233469</updated>
-      <workItem from="1737536234556" duration="3486000" />
+      <workItem from="1737536234556" duration="6914000" />
     </task>
     <servers />
   </component>

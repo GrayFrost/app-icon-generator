@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="app-icon-generator">
+    <output-path>$PROJECT_DIR$/out/artifacts/app_icon_generator</output-path>
+    <root id="archive" name="app-icon-generator.jar" />
+  </artifact>
+</component>
