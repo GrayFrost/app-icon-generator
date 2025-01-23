@@ -6,14 +6,19 @@ import { saveAs } from "file-saver";
 const sizes = [16, 32, 64, 128, 256, 512, 1024];
 const generatedImages = ref([]);
 const processing = ref(false);
+const errorMessage = ref('');
 
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
   
+  processing.value = true;
+  errorMessage.value = '';
+  
   try {
-    generateIcons(file);
+    await generateIcons(file);
   } catch (error) {
+    errorMessage.value = error.message || '图片处理失败，请重试';
     console.error("图片处理失败:", error);
   } finally {
     processing.value = false;
@@ -87,6 +92,10 @@ const downloadSingle = ({ size, url }) => {
 <template>
   <div class="icon-generator">
     <h2>macOS 应用图标生成器</h2>
+
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
 
     <div class="upload-section">
       <div class="upload-box" :class="{ processing, 'has-file': generatedImages.length }">
@@ -230,6 +239,7 @@ const downloadSingle = ({ size, url }) => {
   display: flex;
   align-items: center;
   gap: 1rem;
+  z-index: 10;
 }
 
 .spinner {
@@ -295,5 +305,20 @@ button.small {
   padding: 0.3em 0.6em;
   font-size: 0.9em;
   margin-top: 0.5rem;
+}
+
+.error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff4444;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  text-align: center;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+/* 优化 loading 状态下的视觉效果 */
+.processing .file-label {
+  opacity: 0.5;
 }
 </style>
